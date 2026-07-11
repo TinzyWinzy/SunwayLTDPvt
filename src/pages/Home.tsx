@@ -37,61 +37,148 @@ export function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-primary via-primary to-primary-900 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(236,29,39,0.15),transparent_50%)]" />
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/10 to-transparent" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      <section className="relative min-h-[90vh] flex items-center bg-[#0f0d2e] overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-[0.03]"
+          style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-24 md:py-32">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <span className="inline-block bg-accent/20 text-white px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-                Zimbabwe's Trusted Solar Provider
-              </span>
-              <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 text-white">
-                Power Your Life with{' '}
-                <span className="text-accent">Solar Energy</span>
+        {/* Glow orbs */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-accent/8 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary-400/10 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-[300px] h-[300px] bg-accent/5 rounded-full blur-[80px] -translate-x-1/2 -translate-y-1/2" />
+
+        {/* Decorative lines */}
+        <div className="absolute top-0 right-0 w-64 h-64 border border-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-20 left-10 w-48 h-48 border border-white/[0.03] rounded-full" />
+
+        <div className="relative w-full max-w-7xl mx-auto px-4 py-20 md:py-16">
+          <div className="grid lg:grid-cols-5 gap-12 items-center">
+            {/* Left: Text */}
+            <div className="lg:col-span-3">
+              <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 mb-8">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm text-gray-300 font-medium">
+                  Serving Zimbabwe since 2020
+                </span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] mb-6 text-white tracking-tight">
+                Solar Power
+                <br />
+                <span className="text-accent">Made Simple</span>
               </h1>
-              <p className="text-lg text-gray-200 mb-8 leading-relaxed">
-                Premium solar generators, panels, and home solutions. Reliable backup power
-                for your home and business. Delivery nationwide.
+
+              <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-xl leading-relaxed">
+                Premium solar generators, panels, and home essentials —
+                delivered anywhere in Zimbabwe. Reliable backup power
+                without the hassle.
               </p>
-              <div className="flex flex-wrap gap-4">
+
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap gap-4 mb-12">
                 <Link
                   to="/products"
-                  className="btn-primary text-lg px-8 py-3.5 inline-flex items-center gap-2 shadow-lg shadow-accent/25"
+                  className="group bg-accent hover:bg-accent-600 text-white px-8 py-4 rounded-xl font-bold text-lg inline-flex items-center gap-3 shadow-xl shadow-accent/30 transition-all hover:shadow-2xl hover:shadow-accent/40 hover:-translate-y-0.5"
                 >
-                  Shop Now
-                  <ArrowRight className="w-5 h-5" />
+                  Explore Products
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
                   href={`https://wa.me/${SITE.phoneIntl}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border-2 border-white/30 text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-white hover:text-primary transition-all"
+                  className="group inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border-2 border-white/15 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-primary transition-all"
                 >
-                  WhatsApp Us
+                  WhatsApp
+                  <ArrowRight className="w-4 h-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                 </a>
+              </div>
+
+              {/* Trust Stats */}
+              <div className="flex flex-wrap gap-x-10 gap-y-4">
+                <div>
+                  <div className="text-2xl font-bold text-white">14+</div>
+                  <div className="text-sm text-gray-400">Products</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">3</div>
+                  <div className="text-sm text-gray-400">Branches</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">$50+</div>
+                  <div className="text-sm text-gray-400">Free Delivery</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">24/7</div>
+                  <div className="text-sm text-gray-400">Support</div>
+                </div>
               </div>
             </div>
 
-            <div className="hidden md:block relative">
+            {/* Right: Product Showcase Cards */}
+            <div className="lg:col-span-2 hidden lg:block">
               <div className="relative">
-                <div className="absolute -inset-4 bg-accent/10 rounded-3xl blur-xl" />
-                <img
-                  src="/solargen.jpg"
-                  alt="Solar Generator"
-                  className="relative w-full h-72 object-cover rounded-2xl shadow-2xl"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary/90 to-transparent p-6 rounded-b-2xl">
-                  <div className="text-sm text-gray-300">Starting from</div>
-                  <div className="text-3xl font-bold text-accent">$90</div>
-                  <div className="text-sm text-gray-300">150W – 2kWh Solar Generators</div>
+                {/* Floating card 1 — main generator */}
+                <div className="relative z-20 bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl p-5 shadow-2xl">
+                  <img
+                    src="/solargen.jpg"
+                    alt="Solar Generator"
+                    className="w-full h-48 object-cover rounded-xl mb-4"
+                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white font-semibold text-sm">Solar Generator</span>
+                    <span className="bg-accent/20 text-accent text-xs font-bold px-2.5 py-1 rounded-full">
+                      Popular
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-white text-2xl font-bold">$160</span>
+                    <span className="text-gray-400 text-xs">500W model</span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-2 text-xs text-gray-400">
+                    <Zap className="w-3 h-3 text-accent" />
+                    Powers fridge, TV, laptop & WiFi
+                  </div>
                 </div>
+
+                {/* Floating card 2 — offset */}
+                <div className="relative z-10 -mt-4 ml-8 bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-4 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
+                      <img src="/2kwh.jpg" alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-white font-medium text-sm truncate">2kWh Wall Mount</div>
+                      <div className="text-accent font-bold">$530</div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-500" />
+                  </div>
+                </div>
+
+                {/* Floating card 3 — more offset */}
+                <div className="relative z-0 -mt-4 ml-16 bg-white/[0.03] backdrop-blur-sm border border-white/5 rounded-2xl p-4 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
+                      <img src="/solagne.jpg" alt="" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-white font-medium text-sm truncate">150W Starter Kit</div>
+                      <div className="text-accent font-bold">$90</div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-500" />
+                  </div>
+                </div>
+
+                {/* Decorative glow behind cards */}
+                <div className="absolute -inset-8 bg-gradient-to-br from-accent/10 via-transparent to-primary-400/10 rounded-3xl blur-3xl -z-10" />
               </div>
             </div>
           </div>
         </div>
+
+        {/* Bottom fade transition */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent pointer-events-none" />
       </section>
 
       {/* Trust perks */}
