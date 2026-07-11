@@ -183,6 +183,103 @@ export function Home() {
         </div>
       </section>
 
+      {/* Installation Showcase */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold">Our Installation Work</h2>
+            <p className="text-gray-500 text-sm mt-1">Professional solar setups across Zimbabwe</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {['/roofinstall.jpg', '/wallinstall.jpg', '/sittedroof.jpg', '/instal1.jpg'].map((img, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-200">
+                <img
+                  src={img}
+                  alt={`Installation ${i + 1}`}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us + Team */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-accent/5 rounded-2xl -rotate-2" />
+              <img
+                src="/team.jpg"
+                alt="Sunway Solar Team"
+                className="relative w-full h-80 object-cover rounded-2xl shadow-lg"
+              />
+              <div className="absolute -bottom-4 -right-4 bg-primary text-white px-5 py-3 rounded-xl shadow-lg">
+                <div className="text-2xl font-bold">5+</div>
+                <div className="text-xs text-gray-300">Years Experience</div>
+              </div>
+            </div>
+
+            <div>
+              <span className="text-accent font-semibold text-sm uppercase tracking-wider">
+                Why Choose Us
+              </span>
+              <h2 className="text-3xl font-bold mt-2 mb-6">
+                Zimbabwe's Trusted Solar Partner
+              </h2>
+
+              <div className="space-y-5">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent text-lg font-bold">01</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Expert Installation Team</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Certified technicians with years of hands-on experience installing solar
+                      systems across Zimbabwe.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent text-lg font-bold">02</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Quality Products Guaranteed</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      We source only authentic, warrantied solar equipment and home products
+                      from trusted manufacturers.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-accent text-lg font-bold">03</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">Nationwide Reach</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Branches in Harare, Bulawayo, and Mutare with delivery to every corner
+                      of the country.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <Link
+                to="/branches"
+                className="mt-8 inline-flex items-center gap-2 text-accent font-medium hover:underline"
+              >
+                Visit Our Branches <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Banner */}
       <section className="relative bg-gradient-to-r from-accent to-accent-600 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.15),transparent_60%)]" />
