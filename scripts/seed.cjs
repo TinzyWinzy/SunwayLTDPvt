@@ -116,7 +116,7 @@ async function seed() {
       category_slug: 'smart-home', description: 'Compact fan heater with 2 heat settings and overheat protection.',
       short_description: '2 heat settings, overheat protection, compact',
       price_usd: 10, price_zwl: 2600, stock_qty: 40,
-      images: ['/fan heater.jpg'],
+      images: ['/fan-heater.jpg'],
       specs: { power_watts: 2000, heat_settings: 2, overheat_protection: true },
       weight_kg: 1.2, is_active: true, is_installation_required: false,
     },
