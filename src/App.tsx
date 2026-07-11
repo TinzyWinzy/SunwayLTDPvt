@@ -15,6 +15,7 @@ import { Checkout } from './pages/Checkout'
 import { Orders } from './pages/Orders'
 import { OrderDetail } from './pages/OrderDetail'
 import { Account } from './pages/Account'
+import { Branches } from './pages/Branches'
 import { AdminDashboard } from './pages/Admin/Dashboard'
 import { AdminProducts } from './pages/Admin/Products'
 import { AdminOrders } from './pages/Admin/Orders'
@@ -72,6 +73,7 @@ export function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/products" element={<ProductList />} />
                     <Route path="/products/:slug" element={<ProductDetail />} />
+                    <Route path="/branches" element={<Branches />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/orders" element={<Orders />} />
