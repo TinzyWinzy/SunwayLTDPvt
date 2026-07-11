@@ -36,16 +36,11 @@ export function Home() {
 
   return (
     <div>
-      {/* Hero with background image */}
-      <section className="relative bg-primary overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <img
-            src="/rooftopsolar.jpg"
-            alt="Solar installation"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary/60" />
+      {/* Hero */}
+      <section className="relative bg-gradient-to-br from-primary via-primary to-primary-900 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(236,29,39,0.15),transparent_50%)]" />
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-accent/10 to-transparent" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
         <div className="relative max-w-7xl mx-auto px-4 py-24 md:py-32">
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -80,18 +75,18 @@ export function Home() {
               </div>
             </div>
 
-            {/* Hero product showcase */}
             <div className="hidden md:block relative">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+              <div className="relative">
+                <div className="absolute -inset-4 bg-accent/10 rounded-3xl blur-xl" />
                 <img
                   src="/solargen.jpg"
                   alt="Solar Generator"
-                  className="w-full h-64 object-cover rounded-xl"
+                  className="relative w-full h-72 object-cover rounded-2xl shadow-2xl"
                 />
-                <div className="mt-4 text-white">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary/90 to-transparent p-6 rounded-b-2xl">
                   <div className="text-sm text-gray-300">Starting from</div>
                   <div className="text-3xl font-bold text-accent">$90</div>
-                  <div className="text-sm text-gray-300">150W - 2kWh Solar Generators</div>
+                  <div className="text-sm text-gray-300">150W – 2kWh Solar Generators</div>
                 </div>
               </div>
             </div>
@@ -189,10 +184,8 @@ export function Home() {
       </section>
 
       {/* CTA Banner */}
-      <section className="relative bg-accent overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <img src="/roofinstall.jpg" alt="Installation" className="w-full h-full object-cover" />
-        </div>
+      <section className="relative bg-gradient-to-r from-accent to-accent-600 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.15),transparent_60%)]" />
         <div className="relative max-w-4xl mx-auto px-4 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Professional Solar Installation

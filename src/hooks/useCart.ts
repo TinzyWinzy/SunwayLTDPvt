@@ -6,8 +6,8 @@ export function useCart() {
   const removeItem = useCartStore((s) => s.removeItem)
   const updateQuantity = useCartStore((s) => s.updateQuantity)
   const clearCart = useCartStore((s) => s.clearCart)
-  const totalItems = useCartStore((s) => s.totalItems)
-  const totalPrice = useCartStore((s) => s.totalPrice)
+  const totalItems = items.reduce((sum, i) => sum + i.quantity, 0)
+  const totalPrice = items.reduce((sum, i) => sum + i.product.price_usd * i.quantity, 0)
 
   return { items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice }
 }

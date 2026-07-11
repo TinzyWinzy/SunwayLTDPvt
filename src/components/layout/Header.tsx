@@ -1,20 +1,20 @@
 import { Link } from 'react-router-dom'
-import { ShoppingCart, User, Menu, X, Store } from 'lucide-react'
+import { ShoppingCart, User, Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { useCartStore } from '../../stores/cartStore'
 import { useAuthStore } from '../../stores/authStore'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const totalItems = useCartStore((s) => s.totalItems)
+  const cartItemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0))
   const { user, profile, signOut } = useAuthStore()
 
   return (
     <header className="bg-primary text-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl">
-            <Store className="w-6 h-6 text-accent" />
+          <Link to="/" className="flex items-center gap-3 font-bold text-xl">
+            <img src="/logo.jpg" alt="Sunway Solar" className="h-9 w-9 rounded-lg object-cover" />
             <span>Sunway Solar</span>
           </Link>
 
@@ -25,9 +25,9 @@ export function Header() {
 
             <Link to="/cart" className="relative p-2 hover:text-accent transition-colors">
               <ShoppingCart className="w-5 h-5" />
-              {totalItems() > 0 && (
+              {cartItemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {totalItems()}
+                  {cartItemCount}
                 </span>
               )}
             </Link>
@@ -66,7 +66,7 @@ export function Header() {
             <Link to="/products" className="block py-2 hover:text-accent">Products</Link>
             <Link to="/branches" className="block py-2 hover:text-accent">Branches</Link>
             <Link to="/orders" className="block py-2 hover:text-accent">Orders</Link>
-            <Link to="/cart" className="block py-2 hover:text-accent">Cart ({totalItems()})</Link>
+            <Link to="/cart" className="block py-2 hover:text-accent">Cart ({cartItemCount})</Link>
             {user ? (
               <>
                 <Link to="/account" className="block py-2 hover:text-accent">Account</Link>
