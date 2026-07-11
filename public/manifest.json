@@ -1,0 +1,22 @@
+{
+  "name": "Sunway Solar",
+  "short_name": "Sunway",
+  "description": "Sunway Solar Zimbabwe — Solar Energy & Home Solutions",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1f1a54",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
