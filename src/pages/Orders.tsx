@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { API } from '../lib/api'
 import { useAuthStore } from '../stores/authStore'
 import type { Order } from '../types/database'
 import { formatCurrency, getStatusColor } from '../lib/utils'
+import { OrderListSkeleton } from '../components/ui/Skeleton'
 import { Package } from 'lucide-react'
 
 export function Orders() {
@@ -18,18 +18,10 @@ export function Orders() {
       return
     }
 
-    async function load() {
-      const snap = await getDocs(
-        query(
-          collection(db, 'orders'),
-          where('user_id', '==', user.uid),
-          orderBy('created_at', 'desc'),
-        ),
-      )
-      setOrders(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Order)))
+    API.orders.getByUser(user.uid).then((data) => {
+      setOrders(data)
       setLoading(false)
-    }
-    load()
+    })
   }, [user])
 
   if (!user) {
@@ -47,11 +39,7 @@ export function Orders() {
       <h1 className="text-3xl font-bold mb-8">My Orders</h1>
 
       {loading ? (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="card animate-pulse h-24" />
-          ))}
-        </div>
+        <OrderListSkeleton />
       ) : orders.length === 0 ? (
         <div className="text-center py-12">
           <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />

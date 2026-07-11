@@ -1,43 +1,33 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { API } from '../lib/api'
 import type { Product, Category } from '../types/database'
 import { ProductCard } from '../components/product/ProductCard'
+import { ProductGridSkeleton } from '../components/ui/Skeleton'
+import { TRUST_PERKS, SITE } from '../constants'
 import { Zap, Shield, Truck, Headphones } from 'lucide-react'
+
+const iconsMap: Record<string, React.FC<{ className?: string }>> = {
+  Zap, Shield, Truck, Headphones,
+}
 
 export function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
-      const productsSnap = await getDocs(
-        query(
-          collection(db, 'products'),
-          where('is_active', '==', true),
-          orderBy('created_at', 'desc'),
-          limit(4),
-        ),
-      )
-      const products = productsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as Product))
+      const [products, cats] = await Promise.all([
+        API.products.featured(),
+        API.categories.list(),
+      ])
       setFeaturedProducts(products)
-
-      const catsSnap = await getDocs(
-        query(collection(db, 'categories'), orderBy('sort_order')),
-      )
-      const cats = catsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as Category))
       setCategories(cats)
+      setLoading(false)
     }
     load()
   }, [])
-
-  const perks = [
-    { icon: Zap, title: 'Solar Solutions', desc: 'Reliable energy for home & business' },
-    { icon: Shield, title: 'Quality Guaranteed', desc: 'Authentic products with warranty' },
-    { icon: Truck, title: 'Free Delivery', desc: 'On orders over $50 nationwide' },
-    { icon: Headphones, title: '24/7 Support', desc: 'WhatsApp & phone assistance' },
-  ]
 
   return (
     <div>
@@ -49,15 +39,14 @@ export function Home() {
               <span className="text-accent">Sunway Solar</span>
             </h1>
             <p className="text-lg text-gray-200 mb-8">
-              Zimbabwe's trusted source for solar generators, panels, and home essentials.
-              Quality products at honest prices.
+              {SITE.description}. Quality products at honest prices.
             </p>
             <div className="flex gap-4">
               <Link to="/products" className="btn-primary text-lg">
                 Shop Now
               </Link>
               <a
-                href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '263776755924'}`}
+                href={`https://wa.me/${SITE.phoneIntl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline border-white text-white hover:bg-white hover:text-primary"
@@ -71,15 +60,18 @@ export function Home() {
 
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {perks.map((perk) => (
-            <div key={perk.title} className="text-center">
-              <div className="w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-3">
-                <perk.icon className="w-6 h-6 text-accent" />
+          {TRUST_PERKS.map((perk) => {
+            const Icon = iconsMap[perk.icon]
+            return (
+              <div key={perk.title} className="text-center">
+                <div className="w-12 h-12 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-3">
+                  {Icon && <Icon className="w-6 h-6 text-accent" />}
+                </div>
+                <h3 className="font-semibold text-sm">{perk.title}</h3>
+                <p className="text-xs text-gray-500 mt-1">{perk.desc}</p>
               </div>
-              <h3 className="font-semibold text-sm">{perk.title}</h3>
-              <p className="text-xs text-gray-500 mt-1">{perk.desc}</p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 
@@ -113,11 +105,15 @@ export function Home() {
               View All
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <ProductGridSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

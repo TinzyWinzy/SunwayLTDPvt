@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { API } from '../lib/api'
 import type { Product } from '../types/database'
 import { formatCurrency } from '../lib/utils'
 import { useCartStore } from '../stores/cartStore'
+import { ProductDetailSkeleton } from '../components/ui/Skeleton'
 import { ShoppingCart, Zap, Package, Truck, Shield } from 'lucide-react'
 
 export function ProductDetail() {
@@ -16,29 +16,15 @@ export function ProductDetail() {
 
   useEffect(() => {
     async function load() {
-      const snap = await getDoc(doc(db, 'products', slug!))
-      if (snap.exists()) {
-        setProduct({ id: snap.id, ...snap.data() } as Product)
-      }
+      if (!slug) return
+      const data = await API.products.getBySlug(slug)
+      setProduct(data)
       setLoading(false)
     }
     load()
   }, [slug])
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="animate-pulse grid md:grid-cols-2 gap-8">
-          <div className="aspect-square bg-gray-200 rounded-xl" />
-          <div className="space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-3/4" />
-            <div className="h-4 bg-gray-200 rounded w-1/4" />
-            <div className="h-20 bg-gray-200 rounded" />
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <ProductDetailSkeleton />
 
   if (!product) {
     return (

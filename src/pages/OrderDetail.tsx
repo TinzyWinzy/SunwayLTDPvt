@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { API } from '../lib/api'
 import type { Order } from '../types/database'
 import { formatCurrency, getStatusColor } from '../lib/utils'
+import { Spinner } from '../components/ui/Skeleton'
 import { ArrowLeft, Package } from 'lucide-react'
 
 export function OrderDetail() {
@@ -13,25 +13,15 @@ export function OrderDetail() {
 
   useEffect(() => {
     async function load() {
-      const snap = await getDoc(doc(db, 'orders', id!))
-      if (snap.exists()) {
-        setOrder({ id: snap.id, ...snap.data() } as Order)
-      }
+      if (!id) return
+      const data = await API.orders.getById(id)
+      setOrder(data)
       setLoading(false)
     }
     load()
   }, [id])
 
-  if (loading) {
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/3" />
-          <div className="h-40 bg-gray-200 rounded" />
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <Spinner />
 
   if (!order) {
     return (
@@ -72,7 +62,6 @@ export function OrderDetail() {
         <span className={getStatusColor(order.status)}>{order.status}</span>
       </div>
 
-      {/* Timeline */}
       <div className="card mb-6">
         <div className="flex items-center justify-between">
           {timeline.map((step, i) => (
@@ -94,7 +83,6 @@ export function OrderDetail() {
         </div>
       </div>
 
-      {/* Items */}
       <div className="card mb-6">
         <h3 className="font-semibold mb-4">Items</h3>
         <div className="space-y-3">
@@ -119,7 +107,6 @@ export function OrderDetail() {
         </div>
       </div>
 
-      {/* Details */}
       <div className="card">
         <h3 className="font-semibold mb-4">Order Details</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">

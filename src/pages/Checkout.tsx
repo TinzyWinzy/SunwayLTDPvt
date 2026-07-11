@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { API } from '../lib/api'
 import { useCartStore } from '../stores/cartStore'
 import { useAuthStore } from '../stores/authStore'
 import { formatCurrency } from '../lib/utils'
+import { DELIVERY, PAYMENT_METHODS } from '../constants'
 import { CreditCard, MapPin, Package } from 'lucide-react'
 
 type Step = 'delivery' | 'review' | 'payment'
@@ -23,7 +23,7 @@ export function Checkout() {
     return null
   }
 
-  const delivery = totalPrice() >= 50 ? 0 : 5
+  const delivery = totalPrice() >= DELIVERY.freeThreshold ? 0 : DELIVERY.deliveryFee
   const grandTotal = totalPrice() + delivery
 
   const handleSubmitOrder = async () => {
@@ -35,7 +35,7 @@ export function Checkout() {
     setSubmitting(true)
 
     try {
-      const orderRef = await addDoc(collection(db, 'orders'), {
+      const orderId = await API.orders.create({
         user_id: user.uid,
         items: items.map((i) => ({
           product_id: i.product.id,
@@ -45,16 +45,20 @@ export function Checkout() {
           image_url: i.product.images?.[0] || null,
         })),
         total_usd: grandTotal,
-        delivery_type: deliveryType,
-        payment_method: paymentMethod,
+        total_zwl: null,
         status: 'pending',
+        payment_method: paymentMethod as 'paynow_ecocash' | 'paynow_onemoney' | 'paynow_innbucks' | 'paynow_bank' | 'cod' | null,
+        paynow_poll_url: null,
         paynow_status: null,
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
+        delivery_type: deliveryType,
+        delivery_address: null,
+        branch_id: null,
+        tracking_number: null,
+        notes: null,
       })
 
       clearCart()
-      navigate(`/orders/${orderRef.id}`)
+      navigate(`/orders/${orderId}`)
     } catch (err) {
       console.error('Order failed:', err)
     } finally {
@@ -108,7 +112,7 @@ export function Checkout() {
               <div>
                 <div className="font-medium">Nationwide Delivery</div>
                 <div className="text-sm text-gray-500">
-                  {delivery === 0 ? 'Free delivery' : `$${delivery.toFixed(2)} delivery fee`}
+                  {delivery === 0 ? 'Free delivery' : `$${DELIVERY.deliveryFee.toFixed(2)} delivery fee`}
                 </div>
               </div>
             </label>
@@ -125,7 +129,7 @@ export function Checkout() {
               <div>
                 <div className="font-medium">Branch Pickup</div>
                 <div className="text-sm text-gray-500">
-                  Free pickup at Harare, Bulawayo, or Mutare branch
+                  Free pickup at {DELIVERY.pickupBranches.join(', ')}
                 </div>
               </div>
             </label>
@@ -165,7 +169,7 @@ export function Checkout() {
               <div className="border-t pt-3" />
               <div className="flex justify-between text-sm">
                 <span>Delivery</span>
-                <span>{delivery === 0 ? 'Free' : `$${delivery.toFixed(2)}`}</span>
+                <span>{delivery === 0 ? 'Free' : `$${DELIVERY.deliveryFee.toFixed(2)}`}</span>
               </div>
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
@@ -194,25 +198,19 @@ export function Checkout() {
             </h2>
 
             <div className="space-y-3">
-              {[
-                { value: 'paynow_ecocash', label: 'EcoCash', desc: 'Pay with EcoCash mobile money' },
-                { value: 'paynow_onemoney', label: 'OneMoney', desc: 'Pay with OneMoney' },
-                { value: 'paynow_innbucks', label: 'Innbucks', desc: 'Pay at Innbucks till point' },
-                { value: 'paynow_bank', label: 'Bank Transfer', desc: 'Direct bank deposit' },
-                { value: 'cod', label: 'Cash on Delivery', desc: 'Pay on delivery (pickup only)' },
-              ].map((method) => (
+              {PAYMENT_METHODS.map((method) => (
                 <label
-                  key={method.value}
+                  key={method.id}
                   className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 ${
-                    paymentMethod === method.value && 'border-accent bg-accent/5'
+                    paymentMethod === method.id && 'border-accent bg-accent/5'
                   }`}
                 >
                   <input
                     type="radio"
                     name="payment"
-                    value={method.value}
-                    checked={paymentMethod === method.value}
-                    onChange={() => setPaymentMethod(method.value)}
+                    value={method.id}
+                    checked={paymentMethod === method.id}
+                    onChange={() => setPaymentMethod(method.id)}
                     className="mt-1"
                   />
                   <div>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore'
-import { db } from '../../lib/firebase'
+import { orderBy, limit } from 'firebase/firestore'
+import { API } from '../../lib/api'
 import type { Order } from '../../types/database'
 import { formatCurrency } from '../../lib/utils'
+import { TableSkeleton } from '../../components/ui/Skeleton'
 import { DollarSign, Package, AlertTriangle, Clock } from 'lucide-react'
 
 export function AdminDashboard() {
@@ -13,18 +14,14 @@ export function AdminDashboard() {
     openTasks: 0,
   })
   const [recentOrders, setRecentOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function load() {
       const today = new Date()
       today.setHours(0, 0, 0, 0)
 
-      const [ordersSnap, lowStockSnap] = await Promise.all([
-        getDocs(query(collection(db, 'orders'), orderBy('created_at', 'desc'), limit(10))),
-        getDocs(query(collection(db, 'products'), where('stock_qty', '<', 5))),
-      ])
-
-      const orders = ordersSnap.docs.map((d) => ({ id: d.id, ...d.data() } as Order))
+      const orders = await API.orders.list([orderBy('created_at', 'desc'), limit(10)])
       setRecentOrders(orders)
 
       const todayOrders = orders.filter((o) => {
@@ -35,9 +32,10 @@ export function AdminDashboard() {
       setStats({
         revenueToday: todayOrders.reduce((sum, o) => sum + (o.total_usd || 0), 0),
         pendingOrders: orders.filter((o) => o.status === 'pending' || o.status === 'confirmed').length,
-        lowStock: lowStockSnap.size,
+        lowStock: 0,
         openTasks: 0,
       })
+      setLoading(false)
     }
     load()
   }, [])
@@ -67,34 +65,36 @@ export function AdminDashboard() {
 
       <div className="card">
         <h2 className="font-semibold mb-4">Recent Orders</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-left text-gray-500">
-                <th className="pb-2 font-medium">Order</th>
-                <th className="pb-2 font-medium">Customer</th>
-                <th className="pb-2 font-medium">Status</th>
-                <th className="pb-2 font-medium">Total</th>
-                <th className="pb-2 font-medium">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="border-b last:border-0">
-                  <td className="py-3 font-mono text-xs">#{order.id.slice(0, 8).toUpperCase()}</td>
-                  <td className="py-3">{order.user_id?.slice(0, 8)}</td>
-                  <td className="py-3">
-                    <span className="badge capitalize">{order.status}</span>
-                  </td>
-                  <td className="py-3 font-medium">{formatCurrency(order.total_usd || 0)}</td>
-                  <td className="py-3 text-gray-500">
-                    {order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}
-                  </td>
+        {loading ? (
+          <TableSkeleton rows={5} cols={5} />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-gray-500">
+                  <th className="pb-2 font-medium">Order</th>
+                  <th className="pb-2 font-medium">Status</th>
+                  <th className="pb-2 font-medium">Total</th>
+                  <th className="pb-2 font-medium">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {recentOrders.map((order) => (
+                  <tr key={order.id} className="border-b last:border-0">
+                    <td className="py-3 font-mono text-xs">#{order.id.slice(0, 8).toUpperCase()}</td>
+                    <td className="py-3">
+                      <span className="badge capitalize">{order.status}</span>
+                    </td>
+                    <td className="py-3 font-medium">{formatCurrency(order.total_usd || 0)}</td>
+                    <td className="py-3 text-gray-500 text-xs">
+                      {order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

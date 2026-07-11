@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { collection, getDocs, query, orderBy, where, type QueryConstraint } from 'firebase/firestore'
-import { db } from '../lib/firebase'
+import { where, orderBy } from 'firebase/firestore'
+import { API } from '../lib/api'
 import type { Product, Category } from '../types/database'
 import { ProductCard } from '../components/product/ProductCard'
+import { ProductGridSkeleton } from '../components/ui/Skeleton'
 
 export function ProductList() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -14,22 +15,14 @@ export function ProductList() {
   const activeCategory = searchParams.get('category')
 
   useEffect(() => {
-    async function loadCategories() {
-      const snap = await getDocs(
-        query(collection(db, 'categories'), orderBy('sort_order')),
-      )
-      setCategories(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Category)))
-    }
-    loadCategories()
+    API.categories.list().then(setCategories)
   }, [])
 
   useEffect(() => {
     async function loadProducts() {
       setLoading(true)
-      const constraints: QueryConstraint[] = [
-        where('is_active', '==', true),
-        orderBy('created_at', 'desc'),
-      ]
+
+      const constraints = [where('is_active', '==', true), orderBy('created_at', 'desc')]
 
       if (activeCategory) {
         const cat = categories.find((c) => c.slug === activeCategory)
@@ -38,8 +31,8 @@ export function ProductList() {
         }
       }
 
-      const snap = await getDocs(query(collection(db, 'products'), ...constraints))
-      setProducts(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product)))
+      const data = await API.products.list(constraints)
+      setProducts(data)
       setLoading(false)
     }
     loadProducts()
@@ -76,15 +69,7 @@ export function ProductList() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="card animate-pulse">
-              <div className="aspect-square bg-gray-200 rounded-lg mb-3" />
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-              <div className="h-3 bg-gray-200 rounded w-1/2" />
-            </div>
-          ))}
-        </div>
+        <ProductGridSkeleton />
       ) : products.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
           <p className="text-lg">No products found</p>

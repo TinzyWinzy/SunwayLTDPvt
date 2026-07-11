@@ -27,7 +27,7 @@ export function useRealtime<T extends DocumentData>(
         const docs = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as T[]
+        })) as unknown as T[]
 
         setRecords(docs)
         setLoading(false)
