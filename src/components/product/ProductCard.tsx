@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ShoppingCart, Zap, Star } from 'lucide-react'
+import { ShoppingCart, Zap } from 'lucide-react'
 import type { Product } from '../../types/database'
 import { formatCurrency } from '../../lib/utils'
 import { useCartStore } from '../../stores/cartStore'
